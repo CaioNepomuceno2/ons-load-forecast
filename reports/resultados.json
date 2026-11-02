@@ -1,0 +1,357 @@
+{
+  "periodo_teste": [
+    "2024-01-01 00:00:00",
+    "2026-10-31 23:00:00"
+  ],
+  "mape_geral": [
+    {
+      "area": "SIN",
+      "mape_modelo": 1.835,
+      "mae_modelo": 1519.306,
+      "mape_ons": 1.908,
+      "mae_ons": 1589.234,
+      "mape_combinado": 1.677,
+      "mae_combinado": 1396.845,
+      "mape_modelo_d2": 1.966,
+      "mae_modelo_d2": 1622.408,
+      "mape_oraculo": 1.666,
+      "mae_oraculo": 1367.461,
+      "mape_semana_anterior": 3.853,
+      "mae_semana_anterior": 3143.792,
+      "mape_media_4sem": 3.565,
+      "mae_media_4sem": 2897.305,
+      "n_horas": 24768.0
+    },
+    {
+      "area": "SECO",
+      "mape_modelo": 2.416,
+      "mae_modelo": 1112.343,
+      "mape_ons": 2.316,
+      "mae_ons": 1069.979,
+      "mape_combinado": 2.079,
+      "mae_combinado": 960.322,
+      "mape_modelo_d2": 2.593,
+      "mae_modelo_d2": 1187.891,
+      "mape_oraculo": 2.186,
+      "mae_oraculo": 997.972,
+      "mape_semana_anterior": 5.086,
+      "mae_semana_anterior": 2306.22,
+      "mape_media_4sem": 4.612,
+      "mae_media_4sem": 2080.201,
+      "n_horas": 24816.0
+    },
+    {
+      "area": "S",
+      "mape_modelo": 3.513,
+      "mae_modelo": 502.908,
+      "mape_ons": 3.923,
+      "mae_ons": 558.955,
+      "mape_combinado": 3.312,
+      "mae_combinado": 475.117,
+      "mape_modelo_d2": 3.643,
+      "mae_modelo_d2": 519.618,
+      "mape_oraculo": 3.398,
+      "mae_oraculo": 483.555,
+      "mape_semana_anterior": 6.551,
+      "mae_semana_anterior": 928.229,
+      "mape_media_4sem": 6.053,
+      "mae_media_4sem": 858.805,
+      "n_horas": 24840.0
+    },
+    {
+      "area": "NE",
+      "mape_modelo": 2.325,
+      "mae_modelo": 316.657,
+      "mape_ons": 2.707,
+      "mae_ons": 372.686,
+      "mape_combinado": 2.272,
+      "mae_combinado": 311.637,
+      "mape_modelo_d2": 2.507,
+      "mae_modelo_d2": 342.054,
+      "mape_oraculo": 2.243,
+      "mae_oraculo": 304.439,
+      "mape_semana_anterior": 3.608,
+      "mae_semana_anterior": 488.752,
+      "mape_media_4sem": 3.323,
+      "mae_media_4sem": 450.151,
+      "n_horas": 24792.0
+    },
+    {
+      "area": "N",
+      "mape_modelo": 2.08,
+      "mae_modelo": 173.01,
+      "mape_ons": 2.633,
+      "mae_ons": 222.9,
+      "mape_combinado": 2.162,
+      "mae_combinado": 181.9,
+      "mape_modelo_d2": 2.19,
+      "mae_modelo_d2": 182.408,
+      "mape_oraculo": 1.975,
+      "mae_oraculo": 163.627,
+      "mape_semana_anterior": 3.153,
+      "mae_semana_anterior": 261.127,
+      "mape_media_4sem": 2.893,
+      "mae_media_4sem": 240.794,
+      "n_horas": 24816.0
+    }
+  ],
+  "diebold_mariano": [
+    {
+      "area": "N",
+      "comparacao": "modelo vs ons",
+      "dm": -8.27,
+      "p_valor": 0.0,
+      "n_dias": 1034
+    },
+    {
+      "area": "N",
+      "comparacao": "combinado vs ons",
+      "dm": -12.84,
+      "p_valor": 0.0,
+      "n_dias": 1034
+    },
+    {
+      "area": "N",
+      "comparacao": "modelo vs semana_anterior",
+      "dm": -12.02,
+      "p_valor": 0.0,
+      "n_dias": 1034
+    },
+    {
+      "area": "NE",
+      "comparacao": "modelo vs ons",
+      "dm": -4.42,
+      "p_valor": 0.0,
+      "n_dias": 1033
+    },
+    {
+      "area": "NE",
+      "comparacao": "combinado vs ons",
+      "dm": -9.21,
+      "p_valor": 0.0,
+      "n_dias": 1033
+    },
+    {
+      "area": "NE",
+      "comparacao": "modelo vs semana_anterior",
+      "dm": -9.69,
+      "p_valor": 0.0,
+      "n_dias": 1033
+    },
+    {
+      "area": "S",
+      "comparacao": "modelo vs ons",
+      "dm": -2.61,
+      "p_valor": 0.0091,
+      "n_dias": 1035
+    },
+    {
+      "area": "S",
+      "comparacao": "combinado vs ons",
+      "dm": -7.76,
+      "p_valor": 0.0,
+      "n_dias": 1035
+    },
+    {
+      "area": "S",
+      "comparacao": "modelo vs semana_anterior",
+      "dm": -12.49,
+      "p_valor": 0.0,
+      "n_dias": 1035
+    },
+    {
+      "area": "SECO",
+      "comparacao": "modelo vs ons",
+      "dm": 1.12,
+      "p_valor": 0.2651,
+      "n_dias": 1034
+    },
+    {
+      "area": "SECO",
+      "comparacao": "combinado vs ons",
+      "dm": -5.47,
+      "p_valor": 0.0,
+      "n_dias": 1034
+    },
+    {
+      "area": "SECO",
+      "comparacao": "modelo vs semana_anterior",
+      "dm": -13.29,
+      "p_valor": 0.0,
+      "n_dias": 1034
+    },
+    {
+      "area": "SIN",
+      "comparacao": "modelo vs ons",
+      "dm": -0.9,
+      "p_valor": 0.3673,
+      "n_dias": 1032
+    },
+    {
+      "area": "SIN",
+      "comparacao": "combinado vs ons",
+      "dm": -5.83,
+      "p_valor": 0.0,
+      "n_dias": 1032
+    },
+    {
+      "area": "SIN",
+      "comparacao": "modelo vs semana_anterior",
+      "dm": -12.35,
+      "p_valor": 0.0,
+      "n_dias": 1032
+    }
+  ],
+  "meio_dia_mmgd": [
+    {
+      "area": "N",
+      "ano": 2024,
+      "mape_modelo": 2.4632,
+      "mae_modelo": 189.231,
+      "mape_ons": 3.635,
+      "mae_ons": 292.2939,
+      "n_horas": 1464.0,
+      "mmgd_frac": 0.1924
+    },
+    {
+      "area": "N",
+      "ano": 2025,
+      "mape_modelo": 2.6636,
+      "mae_modelo": 227.0018,
+      "mape_ons": 4.7882,
+      "mae_ons": 421.5054,
+      "n_horas": 1456.0,
+      "mmgd_frac": 0.2447
+    },
+    {
+      "area": "N",
+      "ano": 2026,
+      "mape_modelo": 2.644,
+      "mae_modelo": 234.2051,
+      "mape_ons": 5.0026,
+      "mae_ons": 444.9346,
+      "n_horas": 1216.0,
+      "mmgd_frac": 0.2877
+    },
+    {
+      "area": "NE",
+      "ano": 2024,
+      "mape_modelo": 2.7171,
+      "mae_modelo": 359.3293,
+      "mape_ons": 2.9666,
+      "mae_ons": 400.2891,
+      "n_horas": 1460.0,
+      "mmgd_frac": 0.256
+    },
+    {
+      "area": "NE",
+      "ano": 2025,
+      "mape_modelo": 2.9663,
+      "mae_modelo": 395.7752,
+      "mape_ons": 4.3155,
+      "mae_ons": 592.4388,
+      "n_horas": 1456.0,
+      "mmgd_frac": 0.3546
+    },
+    {
+      "area": "NE",
+      "ano": 2026,
+      "mape_modelo": 3.3718,
+      "mae_modelo": 462.4309,
+      "mape_ons": 4.73,
+      "mae_ons": 659.1847,
+      "n_horas": 1216.0,
+      "mmgd_frac": 0.4168
+    },
+    {
+      "area": "S",
+      "ano": 2024,
+      "mape_modelo": 4.3739,
+      "mae_modelo": 664.8152,
+      "mape_ons": 4.2321,
+      "mae_ons": 629.7575,
+      "n_horas": 1464.0,
+      "mmgd_frac": 0.2487
+    },
+    {
+      "area": "S",
+      "ano": 2025,
+      "mape_modelo": 4.3875,
+      "mae_modelo": 653.8325,
+      "mape_ons": 5.1716,
+      "mae_ons": 771.9964,
+      "n_horas": 1460.0,
+      "mmgd_frac": 0.3105
+    },
+    {
+      "area": "S",
+      "ano": 2026,
+      "mape_modelo": 5.0086,
+      "mae_modelo": 763.1829,
+      "mape_ons": 5.6154,
+      "mae_ons": 868.5081,
+      "n_horas": 1216.0,
+      "mmgd_frac": 0.3249
+    },
+    {
+      "area": "SECO",
+      "ano": 2024,
+      "mape_modelo": 2.838,
+      "mae_modelo": 1363.2204,
+      "mape_ons": 2.7201,
+      "mae_ons": 1305.0806,
+      "n_horas": 1460.0,
+      "mmgd_frac": 0.1926
+    },
+    {
+      "area": "SECO",
+      "ano": 2025,
+      "mape_modelo": 2.755,
+      "mae_modelo": 1334.7554,
+      "mape_ons": 3.2139,
+      "mae_ons": 1559.3194,
+      "n_horas": 1460.0,
+      "mmgd_frac": 0.2613
+    },
+    {
+      "area": "SECO",
+      "ano": 2026,
+      "mape_modelo": 3.0791,
+      "mae_modelo": 1512.4134,
+      "mape_ons": 3.3173,
+      "mae_ons": 1624.4915,
+      "n_horas": 1216.0,
+      "mmgd_frac": 0.2915
+    },
+    {
+      "area": "SIN",
+      "ano": 2024,
+      "mape_modelo": 2.2312,
+      "mae_modelo": 1888.6177,
+      "mape_ons": 2.2685,
+      "mae_ons": 1926.6109,
+      "n_horas": 1460.0,
+      "mmgd_frac": 0.2126
+    },
+    {
+      "area": "SIN",
+      "ano": 2025,
+      "mape_modelo": 2.139,
+      "mae_modelo": 1830.9826,
+      "mape_ons": 3.0415,
+      "mae_ons": 2627.2005,
+      "n_horas": 1452.0,
+      "mmgd_frac": 0.2829
+    },
+    {
+      "area": "SIN",
+      "ano": 2026,
+      "mape_modelo": 2.4707,
+      "mae_modelo": 2161.7343,
+      "mape_ons": 3.3589,
+      "mae_ons": 2943.0974,
+      "n_horas": 1216.0,
+      "mmgd_frac": 0.3172
+    }
+  ]
+}

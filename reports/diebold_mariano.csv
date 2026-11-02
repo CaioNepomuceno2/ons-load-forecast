@@ -1,0 +1,16 @@
+area,comparacao,dm,p_valor,n_dias
+N,modelo vs ons,-8.27,4.234972772076011e-16,1034
+N,combinado vs ons,-12.84,4.2150112976553034e-35,1034
+N,modelo vs semana_anterior,-12.02,2.907153107040434e-31,1034
+NE,modelo vs ons,-4.42,1.0759865896863526e-05,1033
+NE,combinado vs ons,-9.21,1.846186907337473e-19,1033
+NE,modelo vs semana_anterior,-9.69,2.570417136553071e-21,1033
+S,modelo vs ons,-2.61,0.009060937015744185,1035
+S,combinado vs ons,-7.76,2.0908582575944468e-14,1035
+S,modelo vs semana_anterior,-12.49,1.9786779278359742e-33,1035
+SECO,modelo vs ons,1.12,0.26505021335519113,1034
+SECO,combinado vs ons,-5.47,5.560709794787711e-08,1034
+SECO,modelo vs semana_anterior,-13.29,2.5069689585003334e-37,1034
+SIN,modelo vs ons,-0.9,0.3672536152143688,1032
+SIN,combinado vs ons,-5.83,7.23195557827392e-09,1032
+SIN,modelo vs semana_anterior,-12.35,9.33096171620349e-33,1032
