@@ -1,5 +1,7 @@
 # Decisões de dados
 
+O raciocínio, as fórmulas e o desenho da validação estão em [`metodologia.md`](metodologia.md).
+
 ## Carga programada e verificada (ONS)
 
 **Fonte:** API de carga do ONS (`https://apicarga.ons.org.br/prd/`), documentada no portal de dados
