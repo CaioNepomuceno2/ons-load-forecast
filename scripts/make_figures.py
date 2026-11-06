@@ -12,11 +12,12 @@ FIGURES.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({"figure.dpi": 130, "axes.spines.top": False, "axes.spines.right": False,
                      "axes.grid": True, "grid.alpha": 0.3, "font.size": 10})
 COR = {"modelo": "#2a78d6", "ons": "#e8692f", "combinado": "#7b4fd6", "semana_anterior": "#1aa37a",
-       "media_4sem": "#9aa0a6", "modelo_d2": "#8fb8ea", "oraculo": "#444444"}
+       "media_4sem": "#9aa0a6", "modelo_d2": "#8fb8ea", "oraculo": "#444444", "modelo_irr": "#d4a017"}
 ROT = {"modelo": "Modelo aberto (LightGBM)", "ons": "ONS: carga programada",
        "combinado": "Média modelo + ONS",
        "semana_anterior": "Mesma hora, semana anterior", "media_4sem": "Média das últimas 4 semanas",
-       "modelo_d2": "Modelo só com dados até D-2", "oraculo": "Modelo com temperatura observada (oráculo)"}
+       "modelo_d2": "Modelo só com dados até D-2", "oraculo": "Modelo com temperatura observada (oráculo)",
+       "modelo_irr": "Modelo com irradiância e nuvens previstas"}
 NOMES = {"SIN": "SIN", **SUBSISTEMAS}
 
 geral = pd.read_csv(REPORTS / "mape_geral.csv")
@@ -115,3 +116,19 @@ fig.tight_layout()
 fig.savefig(FIGURES / "06_meio_dia_mmgd.png")
 
 print(sorted(p.name for p in FIGURES.glob("*.png")))
+
+# 7. com e sem irradiância e nuvens previstas, por hora do dia (SIN); só se a variante foi rodada
+if "mape_modelo_irr" in hora.columns:
+    h = hora[hora.area == "SIN"]
+    fig, ax = plt.subplots(figsize=(9, 3.8))
+    ax.axvspan(9, 16, color="#f3e3b0", alpha=0.5, lw=0)
+    for m in ["modelo", "modelo_irr", "ons"]:
+        ax.plot(h.hora, h[f"mape_{m}"], color=COR[m], label=ROT[m], lw=2)
+    ax.set_xticks(range(0, 24, 3))
+    ax.set_xlabel("Hora do dia (faixa destacada: 9h às 16h, onde a MMGD pesa)")
+    ax.set_ylabel("MAPE do SIN (%)")
+    ax.set_title("Irradiância e nuvens previstas na véspera: antes e depois", loc="left", fontweight="bold")
+    ax.legend(frameon=False, fontsize=8)
+    fig.tight_layout()
+    fig.savefig(FIGURES / "07_irradiancia_por_hora.png")
+    print(sorted(p.name for p in FIGURES.glob("*.png")))
