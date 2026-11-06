@@ -63,7 +63,8 @@ for area, g in df.groupby("area"):
     d = g.assign(**{f"ape_{k}": (g[c] - g.y).abs() / g.y for k, c in metodos.items()}) \
         .groupby("dia")[[f"ape_{k}" for k in metodos]].mean()
     pares = [("modelo", "ons"), ("combinado", "ons"), ("modelo", "semana_anterior"),
-             ("modelo_irr", "modelo"), ("modelo_irr", "ons"), ("combinado_irr", "combinado"),
+             ("modelo_irr", "modelo"), ("modelo_irr", "ons"), ("modelo_irr", "semana_anterior"),
+             ("combinado_irr", "combinado"),
              ("combinado_irr", "ons"), ("modelo_irr_estrito", "modelo"), ("modelo_irr_embaralhado", "modelo"),
              ("modelo_d2_irr", "modelo_d2"), ("oraculo_irr", "oraculo")]
     for a, b in [(a, b) for a, b in pares if a in metodos and b in metodos]:
@@ -79,6 +80,12 @@ meio = metricas.tabela(md, {k: metodos[k] for k in ["modelo", "ons", "modelo_irr
                        ["area", "ano"])
 meio = meio.merge(md.groupby(["area", "ano"]).mmgd_frac.mean().reset_index(), on=["area", "ano"])
 meio.to_csv(REPORTS / "meio_dia_mmgd.csv", index=False)
+
+# Carnaval de 2025 no SE/CO: erro percentual médio do dia de cada método (segunda, terça e quarta de Cinzas)
+carnaval = df[(df.area == "SECO") & df.dia.isin(pd.to_datetime(["2025-03-03", "2025-03-04", "2025-03-05"]))]
+carnaval = metricas.tabela(carnaval, metodos, ["dia"])
+carnaval[["dia", *[c for c in carnaval.columns if c.startswith("mape_")]]].to_csv(
+    REPORTS / "carnaval_2025.csv", index=False)
 
 df.to_parquet(P / "avaliacao.parquet", index=False)
 res = {

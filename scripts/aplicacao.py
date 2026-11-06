@@ -2,7 +2,8 @@
 
 Lê data/processed/avaliacao.parquet (gerado por scripts/avaliar.py) e grava reports/aplicacao.json:
 erro absoluto em MW do ONS, do modelo e da média modelo + ONS, inclusive na cauda (horas de erro grande),
-que é o que pesa no dimensionamento de reserva e no redespacho.
+que é o que pesa no dimensionamento de reserva e no redespacho. As chaves ``modelo`` e ``combinado`` são as
+versões sem irradiância; ``modelo_irr`` e ``combinado_irr`` são as com irradiância e nuvens previstas.
 """
 import json
 
@@ -15,6 +16,8 @@ PROCESSED = DATA / "processed"
 
 df = pd.read_parquet(PROCESSED / "avaliacao.parquet")
 metodos = {"ons": "pred_ons", "modelo": "pred_modelo", "combinado": "pred_combinado"}
+if "pred_modelo_irr" in df.columns:  # variante com irradiância e nuvens: chaves novas, as antigas não mudam
+    metodos |= {"modelo_irr": "pred_modelo_irr", "combinado_irr": "pred_combinado_irr"}
 out = {"periodo": [str(df.ts.min()), str(df.ts.max())]}
 
 for area in ["SIN", "SECO", "S", "NE", "N"]:
@@ -30,6 +33,9 @@ for area in ["SIN", "SECO", "S", "NE", "N"]:
         }
     r["reducao_mae_combinado_vs_ons_mw"] = r["ons"]["mae_mw"] - r["combinado"]["mae_mw"]
     r["reducao_p95_combinado_vs_ons_mw"] = r["ons"]["p95_mw"] - r["combinado"]["p95_mw"]
+    if "combinado_irr" in r:
+        r["reducao_mae_combinado_irr_vs_ons_mw"] = r["ons"]["mae_mw"] - r["combinado_irr"]["mae_mw"]
+        r["reducao_p95_combinado_irr_vs_ons_mw"] = r["ons"]["p95_mw"] - r["combinado_irr"]["p95_mw"]
     out[area] = r
 
 # meio do dia (10h-14h) no SIN em 2026, onde a MMGD pesa mais
