@@ -46,8 +46,9 @@ Eu o testei: o modelo ganhou a previsão de radiação de onda curta e de cobert
 emitida na véspera, para os mesmos centros de carga e com os mesmos pesos da temperatura. As variantes, as
 janelas e a regra de decisão foram escritas e commitadas antes de rodar o backtest
 ([`docs/preregistro_irradiancia.md`](docs/preregistro_irradiancia.md)). A regra foi cumprida, e o modelo com
-irradiância virou o "Modelo aberto" deste README. Todos os números abaixo saem de
-`reports/irradiancia_*.csv` e `reports/diebold_mariano.csv`.
+irradiância virou o "Modelo aberto" deste README. Não houve desvio do plano, além de uma correção de redação
+no pré-registro (quais modelos do Open-Meteo têm a previsão desde 19/01/2024), commitada antes de qualquer
+resultado. Todos os números abaixo saem de `reports/irradiancia_*.csv` e `reports/diebold_mariano.csv`.
 
 | MAPE horário do SIN | Sem irradiância | Com irradiância | Variação | ONS |
 |---|---|---|---|---|
@@ -102,7 +103,7 @@ menos que o ONS (p = 0,002); o modelo sem irradiância já erra menos que o ONS 
   seguramente anterior à programação: 1,76% no SIN, igual ao de `previous_day1`. O ganho não depende de
   previsões publicadas depois do meio-dia de D-1. (2) `modelo_irr_embaralhado` tem as mesmas colunas, com a
   irradiância de outro dia (37 dias antes): 1,82%, ou seja, −0,02 ponto contra −0,08 do modelo real (p = 0,16).
-  Ter mais colunas explica menos de um quarto do ganho. O controle não é nulo em tudo: das 9h às 16h ele
+  Ter mais colunas explica cerca de um quarto do ganho. O controle não é nulo em tudo: das 9h às 16h ele
   melhora 0,035 ponto no SIN (p = 0,038), contra 0,108 do modelo real.
 
 ### Onde cada um erra
@@ -143,8 +144,9 @@ por mais folga. A irradiância recuperou parte do erro de 2026, que ainda é mai
 ![Carnaval](reports/figures/05_carnaval_2025.png)
 
 A regra "repetir a semana passada" erra 11,5% na segunda e 14,3% na terça de Carnaval (MAPE do dia). O
-modelo erra 1,5% e 2,1%, e o ONS, 2,8% e 3,1%. Na Quarta-feira de Cinzas, que tem meia jornada, o ONS acerta
-em cheio (0,5%) e o modelo erra 3,2% (2,7% sem a irradiância). Valores em `reports/carnaval_2025.csv`.
+modelo erra 1,5% e 2,1% (sem a irradiância, 1,2% e 2,1%), e o ONS, 2,8% e 3,1%. Na Quarta-feira de Cinzas,
+que tem meia jornada, o ONS acerta em cheio (0,5%) e o modelo erra 3,2% (2,7% sem a irradiância). Nos três
+dias de Carnaval, a irradiância piorou o modelo ou não mudou nada. Valores em `reports/carnaval_2025.csv`.
 
 ## Na prática: o que muda para quem decide
 
@@ -216,7 +218,7 @@ A metodologia completa, com fórmulas, desenho do backtest e premissas, está em
 | Modelo só com carga até D-2, temperatura prevista e calendário | 1,97% |
 | + carga da madrugada e da manhã de D-1 (00h-10h) | 1,84% |
 | **+ irradiância e nuvens previstas na véspera** | **1,76%** |
-| Com a temperatura observada no lugar da prevista (oráculo, não é previsão) | 1,67% |
+| Oráculo sem irradiância: temperatura observada no lugar da prevista (não é previsão) | 1,67% |
 | Com temperatura, irradiância e nuvens observadas (oráculo, não é previsão) | 1,62% |
 
 A carga da manhã de D-1 vale 0,13 ponto percentual. Ela entra na versão principal porque o ONS também a tem
@@ -281,7 +283,8 @@ pip install -e ".[dev]"
 python scripts/download_ons.py        # carga programada e verificada, 2020 em diante (cache mensal)
 python scripts/download_weather.py    # temperatura, irradiância e nuvens do Open-Meteo (cache por ano)
 python scripts/build_dataset.py       # base horária e matriz de features
-python scripts/backtest.py            # oito variantes, retreino mensal (~20 min cada, 1 thread)
+python scripts/backtest.py            # oito variantes, retreino mensal (~20 min cada, 1 thread);
+                                      # pula o que já existe, --refazer refaz
 python scripts/avaliar.py             # métricas, Diebold-Mariano, tabelas em reports/
 python scripts/comparar_irradiancia.py  # antes/depois da irradiância, por janela e por hora
 python scripts/make_figures.py
