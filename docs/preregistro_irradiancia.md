@@ -12,8 +12,8 @@ meio do dia, onde a MMGD pesa? E reduz o erro a ponto de superar a carga program
 ## Restrição dos dados (verificada em 06/11/2026)
 
 A Previous Runs API do Open-Meteo só guarda `shortwave_radiation_previous_day1` e
-`cloud_cover_previous_day1` **a partir de 19/01/2024 às 09h**, em qualquer modelo testado. A temperatura
-prevista começa em 2022. Logo, o treino de 2022 e 2023 não tem a irradiância prevista (fica ausente), e o
+`cloud_cover_previous_day1` **a partir de 19/01/2024 às 09h** (modelo padrão, GFS e ICON; o ECMWF só começa
+em março de 2024). A temperatura prevista começa em 2022. Logo, o treino de 2022 e 2023 não tem a irradiância prevista (fica ausente), e o
 modelo de cada mês de 2024 aprende com pouca ou nenhuma amostra dela. O ganho, se existir, deve crescer
 com o tempo. Por isso há duas janelas.
 
