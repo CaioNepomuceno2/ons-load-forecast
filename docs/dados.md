@@ -60,8 +60,11 @@ Essa parcela é uma estimativa do ONS, não uma medição.
 
 * **Por que não o INMET:** o portal do INMET recusou conexões do ambiente de execução.
 * **Previsão da véspera:** a [Previous Runs API](https://open-meteo.com/en/docs/previous-runs-api) devolve,
-  para cada hora, o valor previsto na rodada de um dia antes (`temperature_2m_previous_day1`), ou seja, com
-  24 a 48 horas de antecedência. É o que o modelo usa para o dia D. A série `temperature_2m` (rodada mais
+  para cada hora, o valor previsto um dia antes (`temperature_2m_previous_day1`: "o valor previsto 24 horas
+  antes do instante de validade", segundo a documentação). Não é uma rodada única: o Open-Meteo descarta as
+  primeiras 24 horas de cada rodada e junta o resto
+  ([blog](https://openmeteo.substack.com/p/weather-forecasts-from-previous-model-runs)). Para uma hora de D,
+  a rodada foi emitida em D-1 ou antes, nunca em D. É o que o modelo usa para o dia D. A série `temperature_2m` (rodada mais
   recente, próxima do observado) só entra na variante "oráculo" e na temperatura de D-2, que já é passado.
 * **Disponibilidade:** a API tem dados a partir de 2022. Cerca de 5% das horas de 2024 não têm a previsão
   da véspera.
@@ -69,6 +72,33 @@ Essa parcela é uma estimativa do ONS, não uma medição.
   pela população da região metropolitana (`src/loadfc/config.py`). Campo Grande entra no SE/CO.
 * **Limites de uso:** a API gratuita tem limite diário; o download faz uma requisição por subsistema e ano,
   com cache e novas tentativas espaçadas.
+
+## Irradiância e nuvens (Open-Meteo)
+
+Mesma API, mesmos centros de carga e mesmos pesos de população da temperatura. Os pesos são de população, não
+de onde há MMGD instalada; isso é uma limitação (ver README).
+
+* **Variáveis:** `shortwave_radiation` (radiação de onda curta, W/m²) e `cloud_cover` (cobertura total de
+  nuvens, %). `scripts/download_weather.py` baixa, de cada uma, `*_previous_day1` (previsão com cerca de 24 h
+  de antecedência, a usada no modelo), `*_previous_day2` (cerca de 48 h, usada na versão estrita) e a rodada
+  mais recente, sem sufixo (usada só no oráculo e na irradiância observada de D-2, que já é passado).
+  Nunca se usa `previous_day0`.
+* **Disponibilidade:** a Previous Runs API só guarda a irradiância e as nuvens previstas **a partir de
+  19/01/2024, 09h** (verificado em 06/11/2026 no modelo padrão, no GFS e no ICON; o ECMWF começa em março de
+  2024). A temperatura prevista começa em 2022. Em 2024 faltam cerca de 5% das horas. O treino de 2022 e 2023
+  não tem a irradiância prevista (o LightGBM trata como ausente). A rodada recente, sem sufixo, existe desde
+  2022.
+* **Alinhamento horário:** a radiação do Open-Meteo é a média da hora **anterior** ao carimbo, então a hora de
+  carga `h`, que vai de `h` a `h+1`, usa o carimbo `h+1`. O deslocamento nunca atravessa a meia-noite: o
+  carimbo 00:00 de D+1 viria de uma rodada emitida em D (24 h antes), então a hora 23 fica sem valor (é noite).
+  Nuvens são instantâneas e ficam no carimbo. Os testes em `tests/test_irradiancia.py` conferem isso.
+* **Ressalva sobre a hora da emissão:** `previous_day1` garante só que a rodada foi emitida em D-1 ou antes.
+  Para as horas da tarde de D, essa rodada foi emitida e publicada na tarde ou na noite de D-1, depois do
+  meio-dia, quando o ONS programa. A temperatura prevista tem a mesma propriedade. A versão estrita
+  (`previous_day2`, rodada de cerca de 48 h antes) é seguramente anterior à programação; o README mostra
+  quanto do ganho sobra com ela.
+* **Colunas no modelo:** por hora, `ghi` e `nuv` (previstas), `ghi_lag2` (irradiância observada em D-2 na mesma
+  hora) e `ghi_delta` (`ghi - ghi_lag2`), como a temperatura; por dia, `ghi_media_dia` e `nuv_media_dia`.
 
 ## Calendário
 

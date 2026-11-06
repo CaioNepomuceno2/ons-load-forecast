@@ -4,6 +4,8 @@ A programação do dia D é feita na manhã de D-1. Nesse momento:
 
 * a carga verificada conhecida vai até o fim de **D-2** (o dia D-1 ainda está acontecendo);
 * a temperatura de D é uma **previsão** (rodada de um dia antes, ``temp_prev_d1``);
+* a irradiância e as nuvens de D, quando usadas, são **previsões** do mesmo tipo (``prev_d1``; ``prev_d2`` na
+  versão estrita); a irradiância observada só entra para D-2 e antes;
 * o calendário de D é conhecido.
 
 ``LAG_MIN_DIAS = 2`` garante isso: nenhuma carga de D-1 ou D entra nas features. A variante
@@ -16,6 +18,7 @@ import numpy as np
 import pandas as pd
 
 from loadfc.calendario import features_calendario
+from loadfc.weather import FONTES_SOLAR
 
 LAG_MIN_DIAS = 2
 LAGS_DIAS = [2, 3, 7, 14, 21, 28]
@@ -27,12 +30,30 @@ def _pivot_dia_hora(carga: pd.DataFrame) -> pd.DataFrame:
     return c.pivot_table(index=["area", "dia"], columns="hora", values="y")
 
 
+def _acrescentar_solar(X: pd.DataFrame, solar: pd.DataFrame, fonte: str) -> pd.DataFrame:
+    """Irradiância e nuvens de D (``fonte``) e irradiância observada em D-2, que já é passado na véspera."""
+    if fonte not in FONTES_SOLAR:
+        raise ValueError(f"fonte de irradiância desconhecida: {fonte!r}")
+    s = solar[["area", "ts", f"ghi_{fonte}", f"nuv_{fonte}"]].rename(
+        columns={f"ghi_{fonte}": "ghi", f"nuv_{fonte}": "nuv"})
+    X = X.merge(s, on=["area", "ts"], how="left")
+    dia = X.groupby(["area", "dia"]).agg(ghi_media_dia=("ghi", "mean"), nuv_media_dia=("nuv", "mean"))
+    X = X.merge(dia.reset_index(), on=["area", "dia"], how="left")
+    g2 = solar[["area", "ts", "ghi_obs"]].assign(ts=lambda d: d.ts + pd.Timedelta(days=LAG_MIN_DIAS))
+    X = X.merge(g2.rename(columns={"ghi_obs": "ghi_lag2"}), on=["area", "ts"], how="left")
+    X["ghi_delta"] = X.ghi - X.ghi_lag2
+    return X
+
+
 def montar(carga: pd.DataFrame, temp: pd.DataFrame | None, temp_col: str = "temp_prev_d1",
-           hora_corte_d1: int | None = None) -> pd.DataFrame:
+           hora_corte_d1: int | None = None, solar: pd.DataFrame | None = None,
+           solar_fonte: str = "prev_d1") -> pd.DataFrame:
     """Uma linha por área x dia alvo x hora, com alvo ``y`` e features disponíveis na véspera.
 
     ``carga``: colunas area, ts (hora local, início do intervalo), y (MWmed).
     ``temp``: colunas area, ts, temp_prev_d1 / temp_obs (horário local).
+    ``solar``: saída de ``weather.solar_area`` (ghi_*/nuv_*); ``solar_fonte`` escolhe a previsão de D
+    (``prev_d1``, ``prev_d2``) ou a observada (``obs``, oráculo).
     """
     dh = _pivot_dia_hora(carga)
     diario = dh.mean(axis=1).rename("media_dia")
@@ -75,6 +96,8 @@ def montar(carga: pd.DataFrame, temp: pd.DataFrame | None, temp_col: str = "temp
         t2 = temp[["area", "ts", "temp_obs"]].assign(ts=lambda d: d.ts + pd.Timedelta(days=LAG_MIN_DIAS))
         X = X.merge(t2.rename(columns={"temp_obs": "temp_lag2"}), on=["area", "ts"], how="left")
         X["temp_delta"] = X.temp - X.temp_lag2
+    if solar is not None:
+        X = _acrescentar_solar(X, solar, solar_fonte)
     X["y_rel"] = X.y / X.base
     return X.sort_values(["area", "ts"]).reset_index(drop=True)
 

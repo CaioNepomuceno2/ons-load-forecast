@@ -1,9 +1,11 @@
 """Configuração do recorte: subsistemas, cidades para o clima e caminhos."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+# ``LOADFC_ROOT`` aponta os scripts para outra pasta de dados e relatórios (usado nos testes)
+ROOT = Path(os.environ.get("LOADFC_ROOT") or Path(__file__).resolve().parents[2])
 DATA = ROOT / "data"
 RAW = DATA / "raw"
 INTERIM = DATA / "interim"

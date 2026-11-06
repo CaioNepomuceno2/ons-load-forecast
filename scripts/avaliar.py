@@ -20,6 +20,9 @@ pred_cols = [c for c in df.columns if c.startswith("pred_")]
 df = df.dropna(subset=["y", *pred_cols])
 df["pred_combinado"] = (df.pred_modelo + df.pred_ons) / 2
 pred_cols.append("pred_combinado")
+if "pred_modelo_irr" in df.columns:  # variante com irradiância e nuvens (docs/preregistro_irradiancia.md)
+    df["pred_combinado_irr"] = (df.pred_modelo_irr + df.pred_ons) / 2
+    pred_cols.append("pred_combinado_irr")
 
 # SIN = soma dos quatro subsistemas, só nas horas em que os quatro estão completos
 completos = df.groupby("ts").area.transform("nunique") == len(SUBSISTEMAS)
@@ -38,7 +41,11 @@ df["calor"] = np.where(df.temp_max_dia > p90, "calor (máx. prevista > p90)", "d
 
 metodos = {"modelo": "pred_modelo", "ons": "pred_ons", "combinado": "pred_combinado",
            "modelo_d2": "pred_modelo_d2", "oraculo": "pred_oraculo",
-           "semana_anterior": "pred_semana_anterior", "media_4sem": "pred_media_4sem"}
+           "semana_anterior": "pred_semana_anterior", "media_4sem": "pred_media_4sem",
+           "modelo_irr": "pred_modelo_irr", "combinado_irr": "pred_combinado_irr",
+           "modelo_d2_irr": "pred_modelo_d2_irr", "oraculo_irr": "pred_oraculo_irr",
+           "modelo_irr_estrito": "pred_modelo_irr_estrito",
+           "modelo_irr_embaralhado": "pred_modelo_irr_embaralhado"}
 metodos = {k: v for k, v in metodos.items() if v in df.columns}
 REPORTS.mkdir(exist_ok=True)
 ordem = {"SIN": 0, "SECO": 1, "S": 2, "NE": 3, "N": 4}
@@ -55,7 +62,12 @@ dm = []
 for area, g in df.groupby("area"):
     d = g.assign(**{f"ape_{k}": (g[c] - g.y).abs() / g.y for k, c in metodos.items()}) \
         .groupby("dia")[[f"ape_{k}" for k in metodos]].mean()
-    for a, b in [("modelo", "ons"), ("combinado", "ons"), ("modelo", "semana_anterior")]:
+    pares = [("modelo", "ons"), ("combinado", "ons"), ("modelo", "semana_anterior"),
+             ("modelo_irr", "modelo"), ("modelo_irr", "ons"), ("modelo_irr", "semana_anterior"),
+             ("combinado_irr", "combinado"),
+             ("combinado_irr", "ons"), ("modelo_irr_estrito", "modelo"), ("modelo_irr_embaralhado", "modelo"),
+             ("modelo_d2_irr", "modelo_d2"), ("oraculo_irr", "oraculo")]
+    for a, b in [(a, b) for a, b in pares if a in metodos and b in metodos]:
         stat, p = metricas.diebold_mariano(d[f"ape_{a}"], d[f"ape_{b}"], h=7)
         dm.append({"area": area, "comparacao": f"{a} vs {b}", "dm": round(stat, 2), "p_valor": p,
                    "n_dias": len(d)})
@@ -64,9 +76,16 @@ dm.to_csv(REPORTS / "diebold_mariano.csv", index=False)
 
 # meio do dia (10h-14h) x MMGD: o erro de cada método acompanha a fatia de MMGD na carga?
 md = df[df.hora.between(10, 13)].assign(mmgd_frac=lambda d: d.mmgd / d.y)
-meio = metricas.tabela(md, {k: metodos[k] for k in ["modelo", "ons"]}, ["area", "ano"])
+meio = metricas.tabela(md, {k: metodos[k] for k in ["modelo", "ons", "modelo_irr"] if k in metodos},
+                       ["area", "ano"])
 meio = meio.merge(md.groupby(["area", "ano"]).mmgd_frac.mean().reset_index(), on=["area", "ano"])
 meio.to_csv(REPORTS / "meio_dia_mmgd.csv", index=False)
+
+# Carnaval de 2025 no SE/CO: erro percentual médio do dia de cada método (segunda, terça e quarta de Cinzas)
+carnaval = df[(df.area == "SECO") & df.dia.isin(pd.to_datetime(["2025-03-03", "2025-03-04", "2025-03-05"]))]
+carnaval = metricas.tabela(carnaval, metodos, ["dia"])
+carnaval[["dia", *[c for c in carnaval.columns if c.startswith("mape_")]]].to_csv(
+    REPORTS / "carnaval_2025.csv", index=False)
 
 df.to_parquet(P / "avaliacao.parquet", index=False)
 res = {
